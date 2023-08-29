@@ -1,0 +1,19 @@
+.navbar {
+    display: flex;
+    padding: 25px;
+    justify-content: space-around;
+    background-color: black;
+    color: aliceblue;
+    font-size: 24px;
+}
+.links-list{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 25px;
+    padding: 20px;
+}
+.link-item{
+    text-decoration: none;
+    color: white;
+}
