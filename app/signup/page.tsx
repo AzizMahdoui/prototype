@@ -2,15 +2,15 @@
 "use client"
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import {connect} from "../../libs/db"
 import User from "../../models/employee.js"
 import { redirect } from 'next/navigation.js';
-import { signIn } from "next-auth/react"
+import {signIn,signOut, useSession} from "next-auth/react"
 
 // import User from '../models/User';
 
 const UserForm = ({ initialValues = {} }) => {
   const [values, setValues] = useState(initialValues);
+  const session = useSession()
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -60,9 +60,9 @@ const UserForm = ({ initialValues = {} }) => {
         placeholder="Password"
       />
       
-      <button onClick={() => signIn("github")}>Sign in with github</button>
+      <button className="btn" onClick={()=>signIn("google")}>Signin</button>
 
-      <button type="submit"  style={{fontSize:"26px"}}>Save</button>
+      <button className="btn" onClick={()=>signIn("google")}>Signin</button>
     </form>
   );
 };

@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   await dbConnect();
 
   try {
-    const employees = await Employee.find().populate("shiftsHistory");
+    const employees = await Employee.find()
     const responseBody = JSON.stringify(employees);
 
     return new NextResponse(responseBody, {

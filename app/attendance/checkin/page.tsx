@@ -7,11 +7,7 @@ export default function Attendance() {
     const [scanResultFile, setScanResultFile] = useState(null);
     const scannerRef = useRef(null);
 
-    const openScanner = () => {
-        if (scannerRef.current) {
-            scannerRef.current.openImageDialog();
-        }
-    };
+   
 
     const handleScanFile = (result) => {
         if (result) {

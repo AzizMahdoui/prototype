@@ -29,8 +29,7 @@ export async function POST(req: NextRequest) {
           const defaultAttendances = await Promise.all(employees.map(async (employee, index) => {
             const dailyData = new DailyDetails({
               employeeId: employee._id,
-              date: new Date(),
-              shiftForTheDay: [], 
+              date: new Date(formattedDate),
               status: 'pending',
             });
         

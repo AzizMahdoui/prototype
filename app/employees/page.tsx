@@ -4,16 +4,16 @@ import { useEffect, useState } from "react"
 import { Employee } from "../api/employee/register/route"
 
 
-export default async function Users  () {
+export default async function Employees () {
     // const {data:session,status} = useSession() 
     // if(status==="unauthenticated"){
     //   return   redirect('/')
     // }
-    const data =  await fetch("http://localhost:3000/api/employee/list",{cache:"no-cache"},{
-      method:"GET",
+       const data =  await fetch("http://localhost:3000/api/employee/list",{cache:"no-cache"},{
+        method:"GET",
       
-  })
-  const Employees:Employee[] =await data.json()
+         })
+    const Employees:Employee[] =await data.json()
    
   
     return (
