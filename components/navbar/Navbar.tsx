@@ -24,6 +24,8 @@ export default function Navbar(){
                 <div className="navbar">
                 <h3>Welcome to The APP you are not authentificated</h3>
                 <ul className="links-list">
+                        <Link className="link-item" href={'/dashboard'}>Dashboard</Link>
+
                         <Link className="link-item" href={'/employees'}>Employees</Link>
                         <button className="btn" onClick={()=>signIn("github")}>Signin with github</button>
                         <Link className="link-item" href={'/attendance'}>Attendance</Link>

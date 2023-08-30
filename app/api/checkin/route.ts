@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     endOfDay.setDate(endOfDay.getDate() + 1);
 
 
-    const employeeDailyStatus = await dailyDetails.findOne({ employeeId: id, date: { $gte: startOfDay, $lt: endOfDay } })
+    const employeeDailyStatus = await dailyDetails.findOne({ employeeId: id, date: { $gte: startOfDay, $lt: endOfDay } }).populate("employeeId")
 
     if (!employeeDailyStatus) {
       return NextResponse.json({ message: 'There is no Employee with this Id or The date of the shift is not set up yet' });

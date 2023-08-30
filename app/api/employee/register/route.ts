@@ -1,44 +1,29 @@
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
-import Employee from "../../../../models/employee";
+import Employee from "../../../../models/employee"; // Assuming you have an EmployeeModel defined in your "employee" model file
 import dbConnect from "../../../../libs/db";
-import qr from "qrcode"
+import qr from "qrcode";
 
-export interface Shift {
-  employeeId:String
-  startTime: string;
-  endTime: string;
-}
-
-export interface Employee extends mongoose.Document {
-  firstName: string;
-  lastName: string;
-  password:String
-  employeeId: string;
-  phoneNumber: string;
-  position: string;
-  shiftHistory: String[];
-  qrcode:String;
-  avatar:String;
-}
-  
-  
 export async function POST(req: NextRequest) {
   await dbConnect();
-  const employee: Employee = await req.json();
+  const employeeData = await req.json();
 
   try {
-    const existingUser = await Employee.findOne({ employeeId: employee.employeeId });
+    const existingUser = await Employee.findOne({ employeeId: employeeData.employeeId });
     if (existingUser) {
-      return NextResponse.json({ message: 'Employee already registered' });
+      return  NextResponse.json({ message: 'Employee already registered' });
     }
 
-    const qrCodeData = `${employee._id}_${employee.employeeId}`;
+    // Generate a new MongoDB _id
+    const _id = new mongoose.Types.ObjectId();
+
+    const qrCodeData = `${_id}_${employeeData.employeeId}`;
     const qrCodeImageDataURL = await qr.toDataURL(qrCodeData);
 
     const newEmployee = new Employee({
-      ...employee,
-      qrCode: qrCodeImageDataURL, 
+      _id, // Include the generated _id
+      ...employeeData,
+      qrCode: qrCodeImageDataURL,
     });
 
     await newEmployee.save();
@@ -46,8 +31,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, data: newEmployee, message: 'Employee Registered Successfully' });
   } catch (error) {
     console.error('User registration error:', error);
-    return NextResponse.json({ message: 'An error occurred' });
+    return  NextResponse.json({ message: 'An error occurred' });
   }
 }
-  
-

@@ -1,5 +1,7 @@
 "use client"
-
+import { QrReader}  from "react-qr-reader"
+import Router from "next/router";
+import AttendanceModal from "../../components/attendanceModal/Attendance";
 import { useState } from "react";
 import './dashboard.css'
 import Link from "next/link";
@@ -7,6 +9,16 @@ import Link from "next/link";
 export default function Dashboard() {
   const [date, setDate] = useState("");
   const [dailyData, setDailyData] = useState([]);
+  
+  const [checkInModal,setCheckInModal] = useState(false)
+  const [checkOutModal,setCheckOutModal] = useState(false)
+  const [employeeIdToCheck,setEmployeeIdToCheck] = useState("")
+
+
+
+ 
+
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
@@ -18,12 +30,14 @@ export default function Dashboard() {
       method: "POST",
     });
     const data = await response.json();
-    setDailyData(data.data); // Update dailyData with fetched data
+    setDailyData(data.data); 
+    console.log(dailyData)// Update dailyData with fetched data
   };
 
   const handleClick = async () => {
     await fetchData(date);
   };
+  
 
   return (
     <div className="dashboard">
@@ -31,7 +45,6 @@ export default function Dashboard() {
         <input onChange={handleChange} type="date" />
         <button onClick={handleClick}>Submit</button>
       </div>
-      <button onClick={() => console.log(dailyData)}>Show Data</button>
       <div className="dailydata">
       <table className="data-table">
           <thead>
@@ -39,24 +52,57 @@ export default function Dashboard() {
               <th>Employee Name</th>
               <th>Date</th>
               <th>Status</th>
+              <th>Operations</th>
             </tr>
           </thead>
           <tbody>
-            {dailyData.map((entry) => (
-                    <tr key={entry._id}>
+            {dailyData ? dailyData.map((entry) => (
+                    <tr key={entry._id!=null}>
                     {/* <Link className="link-item" href={`${entry.employeeId._id}`}> */}
 
-                    <td> <Link href={`${entry.employeeId._id}`}>{entry.employeeId.firstName}</Link></td>
+                    <td> <Link href={`${entry.employeeId?._id}`}>{entry.employeeId?.firstName}</Link></td>
                     <td>{new Date(entry.date).toLocaleDateString()}</td>
-                    <td>{entry.status}</td>
-                    {/* </Link> */}
+                    <td className={
+                      entry.status === "pending"
+                        ? "status-pending"
+                        
+                        : "status-checked-in"
+                        }>
+                    {entry.status}
+                    </td>
+                    {entry.status==="pending"?(
+                        <td><button onClick={()=>{setCheckInModal(true);
+                                                  setEmployeeIdToCheck(entry.employeeId?._id)}}>Check in</button></td>   
+                    ):(<td><button  onClick={()=>{setCheckOutModal(true)
+                                       setEmployeeIdToCheck(entry.employeeId?._id)}}>Check-out</button></td>)}
               </tr>
                 
               
-            ))}
+            )):(
+              <div>Loading</div>
+            )}
           </tbody>
         </table>
       </div>
+      {checkInModal && (
+        <div className="dialog-overlay">
+          <AttendanceModal date={date} status ="checked-in" id={employeeIdToCheck}/>
+          <button onClick={()=>{setCheckInModal(false)}}>Close</button>
+
+        </div>
+        
+      )}
+      {checkOutModal && (
+        <div className="dialog-overlay">
+          <AttendanceModal date={date} status ="checked-out" id={employeeIdToCheck}/>
+          <button onClick={()=>{setCheckOutModal(false)}}>Close</button>
+
+        </div>
+        
+      )}
+       
+        
+     
     </div>
   );
 }
