@@ -21,6 +21,6 @@ export interface Employee extends mongoose.Document {
 export interface DailyDetail extends mongoose.Document {
     employeeId: mongoose.Types.ObjectId;
     date: Date;
-    shift: string;
+    shift: mongoose.Types.ObjectId[];
     status: 'pending' | 'checked-in' | 'checked-out';
   }

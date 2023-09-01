@@ -7,6 +7,7 @@ import { NextResponse,NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { date } = await req.json();
+  // return NextResponse.json(date)
   const formattedDate = new Date(date).toISOString()
 
   await dbConnect();
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest) {
   try {
         const existingAttendance = await DailyDetails.find({
           date: { $gte: startOfDay, $lt: endOfDay }
-        }).populate('employeeId');
+        }).populate(['employeeId','shiftsOfTheDay']);
 
     if (existingAttendance.length === 0) {
           const employees = await Employee.find().select(['_id', "firstName", "lastName", "avatar"]);

@@ -19,8 +19,8 @@ export async function POST(req: NextRequest) {
     endOfDay.setDate(endOfDay.getDate() + 1);
 
 
-    const employeeDailyStatus = await dailyDetails.findOne({ employeeId: id, date: { $gte: startOfDay, $lt: endOfDay } }).populate("employeeId")
-
+    const employeeDailyStatus = await dailyDetails.findOne({ _id: id, date: { $gte: startOfDay, $lt: endOfDay } }).populate(["employeeId","shiftsOfTheDay"])
+    // return NextResponse.json(employeeDailyStatus)
     if (!employeeDailyStatus) {
       return NextResponse.json({ message: 'There is no Employee with this Id or The date of the shift is not set up yet' });
     }
@@ -29,16 +29,17 @@ export async function POST(req: NextRequest) {
 
     }
       const checkInShift = new Shift({
-        employeeId: id,
+        employeeId: employeeDailyStatus.employeeId,
         checkIn: new Date(),
         checkOut: null, 
         status: status,
       });
       
       employeeDailyStatus.status = "checked-in";
+      employeeDailyStatus.shiftOfTheDay=checkInShift._id
       await employeeDailyStatus.save()
       await checkInShift.save()
-      return NextResponse.json({ success: true, data: employeeDailyStatus, message: 'Employee have been checked in successfully' });
+      return NextResponse.json({ success: true, data: {employeeDailyStatus}, message: 'Employee have been checked in successfully' });
 
       
     }
